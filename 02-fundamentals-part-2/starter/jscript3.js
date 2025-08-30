@@ -55,3 +55,73 @@ const car = {
     year: 2020,
     color: "black",
 };
+
+const student = {
+  name: "Angela",
+  grades: [85, 92, 78], 
+  address: {
+    street: "123 Main St",
+    city: "Manila",
+  },
+};
+
+console.log(student.grades[0]); 
+console.log(student.address.city); 
+
+// OBJECT METHODS
+const flayon = {
+    firstName: "Flayon",
+    lastName: "Machina",
+    birthYear: 1995,
+    job: "Pilot",
+    friends: ["Bettel", "Octavio", "Hakka"],
+    hasDriversLicense: true,
+
+    calcAge: function (birthYear) {
+        return 2037 - birthYear;
+    },
+};
+
+console.log(flayon.calcAge(1991));
+console.log(flayon.calcAge(flayon.birthYear));
+
+const flayonImproved = {
+    firstName: "Flayon",
+    lastName: "Machina",
+    birthYear: 1995,
+    job: "Pilot",
+    friends: ["Bettel", "Octavio", "Hakka"],
+    hasDriversLicense: true,
+
+    calcAge: function () {
+        console.log(this);
+        return 2025 - this.birthYear;
+    },
+};
+
+console.log(flayonImproved.calcAge());
+
+const flayonAdvanced = {
+    firstName: "Flayon",
+    lastName: "Machina",
+    birthYear: 1995,
+    job: "Pilot",
+    friends: ["Bettel", "Octavio", "Hakka"],
+    hasDriversLicense: true,
+
+    calcAge: function () {
+        this.age = 2025 - this.birthYear;
+        return this.age;
+    },
+
+    getSummary: function () {
+        return `${this.firstName} is a ${this.calcAge()}-year-old ${this.job},
+        and he has ${this.hasDriversLicense ? "a" : "no"} driver's license`;
+    },
+};
+
+console.log(flayonAdvanced.calcAge());
+console.log(flayonAdvanced.age);
+console.log(flayonAdvanced.getSummary());
+
+
