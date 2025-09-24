@@ -106,3 +106,4 @@ console.log('Player 0 winner:', player0El.classList.contains('player--winner'));
 console.log('Player 1 winner:', player1El.classList.contains('player--winner'));
 console.log('Player 0 active:', player0El.classList.contains('player--active'));
 console.log('Player 1 active:', player1El.classList.contains('player--active'));
+
