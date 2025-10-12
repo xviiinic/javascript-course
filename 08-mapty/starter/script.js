@@ -89,3 +89,123 @@ run1.click();
 cycling1.click();
 console.log('Run clicks:', run1.clicks);
 console.log('Cycling clicks:', cycling1.clicks);
+
+console.log('=== TESTING GEOLOCATION API ===');
+
+//// FINAL CODE
+class App {
+  #map;
+  #mapZoomLevel = 13;
+  #mapEvent;
+  #workouts = {};
+
+  constructor() {
+    console.log('App starting');
+    this._getPosition();
+  }
+
+  _loadMap(position) {
+    const { latitude, longitude } = position.coords;
+    console.log(`Loading map at coordinates: ${latitude}, ${longitude}`);
+
+    // create coordinate array
+    // VERY IMPORTANT!!!!
+    const coords = [latitude, longitude];
+
+    // initalize map and center at users location
+    this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
+
+    // add open street map
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.#map);
+
+    // add a marker to the users location
+    L.marker(coords).addTo(this.#map).bindPopup('Test location!').openPopup();
+
+    // map click!
+    this.#map.on('click', function (mapEvent) {
+      console.log('Map clicked!', mapEvent);
+      // Extract coordindate when clicking on the map
+      const { lat, lng } = mapEvent.latlng;
+      console.log(`Map clicked at: ${lat.toFixed(4)},${lng.toFixed(4)}`);
+
+      // craete the blue marker
+      L.marker([lat, lng])
+        .addTo(this.#map)
+        .bindPopup(
+          `Workout location<br>Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`
+        )
+        .openPopup();
+    });
+
+    console.log('Map created successfully!');
+  }
+
+  _loadDefaultMap() {
+    console.log('Loading default map location');
+    const defaultCoords = [14.604, 120.994];
+
+    this.#map = L.map('map').setView(defaultCoords, 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.#map);
+
+    // map click!
+    this.#map.on('click', function (mapEvent) {
+      console.log('Map clicked!', mapEvent);
+      // Extract coordindate when clicking on the map
+      const { lat, lng } = mapEvent.latlng;
+      console.log(`Map clicked at: ${lat.toFixed(4)},${lng.toFixed(4)}`);
+
+      // craete the blue marker
+      L.marker([lat, lng])
+        .addTo(this.#map)
+        .bindPopup(
+          `Workout location<br>Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}`
+        )
+        .openPopup();
+    });
+    console.log('Default map loaded successfully!');
+  }
+  _getPosition() {
+    if (navigator.geolocation) {
+      console.log('🔍 Requesting user location...');
+      navigator.geolocation.getCurrentPosition(this._loadMap.bind(this), {
+        timeout: 10000,
+        enableHighAccuracy: true,
+        maximumAge: 600000,
+      });
+    } else {
+      alert('❌ Geolocation is not supported by this browser');
+      this._loadDefaultMap();
+    }
+  }
+  _handleLocationError(error) {
+    console.error('Geolocation error:', error);
+
+    let message = 'Could not get your position. ';
+
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        message +=
+          'Location access was denied. Please enable location services and refresh the page.';
+        break;
+      case error.POSITION_UNAVAILABLE:
+        message += 'Location information is unavailable.';
+        break;
+      case error.TIMEOUT:
+        message += 'Location request timed out.';
+        break;
+      default:
+        message += 'An unknown error occurred.';
+        break;
+    }
+
+    alert(`📍 ${message}`);
+    this._loadDefaultMap();
+  }
+}
